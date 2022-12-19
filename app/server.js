@@ -69,18 +69,23 @@ router.post("/", ( req , res ) => {
 
 /*Peticiones PUT*/
 
-/*app.put("/api/productos/:id", ( req , res ) => {
-    const { id } = req.params;
-    const { titleAct , priceAct , thumbnailAct } = req.body;
-    let productoAmodificar = productosEnBase.find( obj => obj.id == id );
-    productoAmodificar = {
-        title: titleAct,
-        price: priceAct,
-        thumbnail : thumbnailAct,
-        id : id,
-    };
+app.put("/api/productos/:id", ( req , res ) => {
+    if (req.params) {
+        const { id } = req.params;
+        const { titleAct , priceAct , thumbnailAct } = req.body;
+        async function modificarProducto( id , titleAct , priceAct , thumbnailAct ){
+            await productos.updateProduct( id , titleAct , priceAct , thumbnailAct )
+        }
+        const productoActualizado = modificarProducto( id , titleAct , priceAct , thumbnailAct );
+        res.status(200).send({ titleAct , priceAct , thumbnailAct });
+
+    }
+    
+    
+    
+    res.send(productoAmodificar);
 })
-*/
+
 
 /*Peticiones DELETE*/
 

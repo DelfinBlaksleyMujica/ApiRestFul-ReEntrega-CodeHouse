@@ -25,6 +25,36 @@ class Contenedor {
         }
     }
     
+    async updateProduct ( id , titleAct , priceAct , thumbnailAct  ){
+        try{
+            const leer = await fs.readFile( this.path , "utf-8" );
+            const data = JSON.parse( leer );
+            let productoAModificar = data.find( obj => obj.id == id);
+            if (!productoAModificar) {
+                console.log("No existe un producto con dicho id");
+                return null;
+            }else { 
+                const nuevoArray = data.filter( obj => obj.id != id );
+                await fs.writeFile( this.path , JSON.stringify( nuevoArray , null , 2 ) , "utf-8");
+                console.log("Se elimino el elemento con id: " + id);
+                productoAModificar={
+                title : titleAct,
+                price: priceAct,
+                thumbnail: thumbnailAct,
+                id : parseInt(id),
+                estado: "Producto modificado"
+                }
+                nuevoArray.push( productoAModificar );
+                await fs.writeFile( this.path , JSON.stringify( nuevoArray , null , 2 ) , "utf-8");
+                console.log("Se agrego el producto " + JSON.stringify(objeto.title) + " correctamente");
+                return newProduct.id;
+            }
+        }catch ( e ) {
+            console.log(e);
+        }
+        
+
+    }
 
     async getById(id){
         try{
