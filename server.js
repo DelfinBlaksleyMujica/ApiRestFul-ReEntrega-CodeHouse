@@ -12,6 +12,8 @@ app.use(express.urlencoded({ extended:true }));
 
 app.use("/api/productos" , router );
 
+app.use(express.static("public"));
+
 
 /*Peticiones Get*/
 
