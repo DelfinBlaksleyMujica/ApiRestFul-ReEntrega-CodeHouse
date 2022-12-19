@@ -2,19 +2,20 @@ const Container = require("./container.js");
 const productos = new Container("./productos.json");
 const productosEnBase = require("./productos.json");
 
-
 const express = require("express");
-const Router = require("express").Router;
-
+const { Router } = require("express");
+const router = Router();
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended:true }));
 
+app.use("/api/productos" , router );
+
 
 /*Peticiones Get*/
 
-app.get("/api/productos", ( req , res ) => {
+router.get("/", ( req , res ) => {
     try{
         console.log("Se muestran todos los productos correctamente");
         res.status(200).send({ productos: productosEnBase });
@@ -25,7 +26,7 @@ app.get("/api/productos", ( req , res ) => {
     }
 })
 
-app.get("/api/productos/:id", ( req , res ) => {
+router.get("/:id", ( req , res ) => {
     try{
         if (req.params) {
             const { id } = req.params;
@@ -45,9 +46,9 @@ app.get("/api/productos/:id", ( req , res ) => {
 
 
 /*Peticiones Post*/
-app.post("/api/productos", ( req , res ) => {
+router.post("/", ( req , res ) => {
     try{
-        if ( req.body.title || req.body.price || req.body.thumbnail ) {
+        if ( req.body.title && req.body.price && req.body.thumbnail ) {
         const obj = req.body;
         async function cargarProducto( producto ) {
             await productos.save( obj );
@@ -55,7 +56,7 @@ app.post("/api/productos", ( req , res ) => {
         const nuevoProducto = cargarProducto( obj );
         res.status(200).send({ nuevoProducto: obj });
     }
-    res.status(200).send({ message:"No hay informacion de usuarios en los params" })
+    res.status(200).send({ message:"Debe completar toda la informacion del producto para poder cargarlo" })
     }catch ( error ) {
         console.log("Error en el get del producto");
         res.status(500).send({ message : error.message })
@@ -81,7 +82,7 @@ app.post("/api/productos", ( req , res ) => {
 
 /*Peticiones DELETE*/
 
-app.delete("/api/productos/:id" , ( req , res ) => {
+router.delete("/:id" , ( req , res ) => {
     try {
         if (req.params) {
             const { id } = req.params;
@@ -97,7 +98,7 @@ app.delete("/api/productos/:id" , ( req , res ) => {
         }
     }catch ( error ) {
             console.log("Error en el get del producto");
-            res.status(500).send({ message : error.message })
+        res.status(500).send({ message : error.message })
     }
 })
 
